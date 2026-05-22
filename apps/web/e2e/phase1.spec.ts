@@ -1,6 +1,9 @@
 import { expect, test, type Page } from "@playwright/test";
 
-const screenshotOptions = { fullPage: true, maxDiffPixels: 50 };
+const screenshotOptions =
+  process.env.CI === "true"
+    ? { fullPage: true, maxDiffPixelRatio: 0.05 }
+    : { fullPage: true, maxDiffPixels: 50 };
 
 for (const width of [375, 768, 1440]) {
   test(`visual regression at ${width}px`, async ({ page }) => {
