@@ -50,7 +50,8 @@ export const copy = {
     landing: {
       eyebrow: "AI speaking practice",
       body: "Talk, get gentle corrections, save the words that slowed you down, and review them on a spaced schedule.",
-      cta: "Start speaking",
+      cta: "Log in",
+      secondaryCta: "Create account",
       cards: ["Low-pressure conversation", "Personal vocabulary", "Spaced review"],
       cardBody: "Free-talk mode keeps Phase 1 focused on the speaking loop."
     },
@@ -107,7 +108,8 @@ export const copy = {
     landing: {
       eyebrow: "AI 口语练习",
       body: "开口练习，获得温和纠错，保存卡住你的词，并按间隔复习。",
-      cta: "开始练习",
+      cta: "登录",
+      secondaryCta: "创建账号",
       cards: ["低压力对话", "个人生词本", "间隔复习"],
       cardBody: "自由对话模式让第一阶段专注于完整的口语循环。"
     },

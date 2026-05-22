@@ -17,9 +17,12 @@ export function LandingPageView({ locale = "en-US" }: { locale?: Locale }) {
           <p className="text-sm font-semibold text-[var(--primary)]">{t.landing.eyebrow}</p>
           <h1 className="text-3xl font-bold leading-tight md:text-5xl">SpeakLoop</h1>
           <p className="mx-auto max-w-2xl text-base text-[var(--text-muted)] md:text-lg">{t.landing.body}</p>
-          <div>
+          <div className="flex flex-col items-center justify-center gap-3 sm:flex-row">
             <Button asChild>
-              <Link href="/register">{t.landing.cta}</Link>
+              <Link href="/login">{t.landing.cta}</Link>
+            </Button>
+            <Button asChild variant="secondary">
+              <Link href="/register">{t.landing.secondaryCta}</Link>
             </Button>
           </div>
         </div>

@@ -28,14 +28,16 @@ describe("public pages", () => {
     render(<LandingPage />);
 
     expect(screen.getByRole("heading", { name: "SpeakLoop" })).toBeInTheDocument();
-    expect(screen.getByRole("link", { name: "Start speaking" })).toHaveAttribute("href", "/register");
+    expect(screen.getByRole("link", { name: "Log in" })).toHaveAttribute("href", "/login");
+    expect(screen.getByRole("link", { name: "Create account" })).toHaveAttribute("href", "/register");
   });
 
   it("renders the landing page in Chinese for iPhone staging validation", () => {
     render(<LandingPage locale="zh-CN" />);
 
     expect(screen.getByText("AI 口语练习")).toBeInTheDocument();
-    expect(screen.getByRole("link", { name: "开始练习" })).toHaveAttribute("href", "/register");
+    expect(screen.getByRole("link", { name: "登录" })).toHaveAttribute("href", "/login");
+    expect(screen.getByRole("link", { name: "创建账号" })).toHaveAttribute("href", "/register");
   });
 
   it("renders login form validation affordances and redirect field", () => {
