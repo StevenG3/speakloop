@@ -62,7 +62,17 @@ export const copy = {
       nativeLanguage: "Native language",
       passwordHelp: "Use at least 8 characters.",
       duplicateEmail: "This email is already registered. Sign in or use another email.",
+      existingAccount: "Already have an account?",
+      signIn: "Log in",
       submit: "Create account"
+    },
+    login: {
+      title: "Log in",
+      email: "Email",
+      password: "Password",
+      submit: "Log in",
+      newAccount: "New to SpeakLoop?",
+      createAccount: "Create account"
     },
     onboarding: {
       title: "Set your speaking loop",
@@ -109,7 +119,17 @@ export const copy = {
       nativeLanguage: "母语",
       passwordHelp: "至少使用 8 个字符。",
       duplicateEmail: "这个邮箱已经注册过，请直接登录或换一个邮箱。",
+      existingAccount: "已有账号？",
+      signIn: "登录",
       submit: "创建账号"
+    },
+    login: {
+      title: "登录",
+      email: "邮箱",
+      password: "密码",
+      submit: "登录",
+      newAccount: "还没有账号？",
+      createAccount: "创建账号"
     },
     onboarding: {
       title: "设置你的口语循环",

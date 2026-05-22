@@ -1,4 +1,5 @@
 import React from "react";
+import Link from "next/link";
 import { LocaleSwitcher } from "@/components/LocaleSwitcher";
 import { Button, Card, Input } from "@/components/ui";
 import { copy, languageLabels, languages, type Locale } from "@/lib/i18n";
@@ -14,9 +15,12 @@ export function RegisterPageView({ locale = "en-US", error }: { locale?: Locale;
   };
 
   return (
-    <main className="grid min-h-screen place-items-center bg-[var(--bg)] px-4 py-12 text-[var(--text)]">
+    <main className="grid min-h-screen place-items-center bg-[var(--bg)] px-4 py-10 text-[var(--text)]">
       <div className="grid w-full max-w-md gap-4">
-        <div className="justify-self-end">
+        <div className="flex items-center justify-between">
+          <Link href="/" className="text-lg font-bold text-[var(--text)]">
+            SpeakLoop
+          </Link>
           <LocaleSwitcher locale={locale} />
         </div>
         <Card>
@@ -56,6 +60,12 @@ export function RegisterPageView({ locale = "en-US", error }: { locale?: Locale;
             </label>
             <Button type="submit">{t.submit}</Button>
           </form>
+          <p className="mt-5 text-center text-sm text-[var(--text-muted)]">
+            {t.existingAccount}{" "}
+            <Link href="/login" className="font-semibold text-[var(--primary)]">
+              {t.signIn}
+            </Link>
+          </p>
         </Card>
       </div>
     </main>

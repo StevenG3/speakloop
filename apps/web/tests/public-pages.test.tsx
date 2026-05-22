@@ -46,6 +46,15 @@ describe("public pages", () => {
     expect(screen.getByDisplayValue("/app/practice")).toHaveAttribute("name", "redirectTo");
   });
 
+  it("renders the login page in Chinese with a registration escape hatch", () => {
+    render(<LoginForm redirectTo="/app/practice" locale="zh-CN" />);
+
+    expect(screen.getByRole("heading", { name: "登录" })).toBeInTheDocument();
+    expect(screen.getByLabelText("邮箱")).toBeRequired();
+    expect(screen.getByLabelText("密码")).toBeRequired();
+    expect(screen.getByRole("link", { name: "创建账号" })).toHaveAttribute("href", "/register");
+  });
+
   it("renders register form with inline requirements", () => {
     render(<RegisterPage />);
 
@@ -59,12 +68,14 @@ describe("public pages", () => {
     expect(screen.getByLabelText("母语")).toBeInTheDocument();
     expect(screen.getByRole("option", { name: "汉语" })).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "创建账号" })).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "登录" })).toHaveAttribute("href", "/login");
   });
 
   it("shows duplicate-email registration errors in Chinese", () => {
     render(<RegisterPage locale="zh-CN" error="email-registered" />);
 
     expect(screen.getByText("这个邮箱已经注册过，请直接登录或换一个邮箱。")).toBeInTheDocument();
+    expect(screen.getAllByRole("link", { name: "登录" })[0]).toHaveAttribute("href", "/login");
   });
 
   it("renders onboarding choices for MVP languages and levels", () => {
