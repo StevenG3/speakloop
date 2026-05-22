@@ -18,5 +18,7 @@ describe("CI and Playwright visual regression", () => {
     expect(ci).toContain("git init");
     expect(ci).toContain("pnpm exec playwright install --with-deps");
     expect(ci).toContain("working-directory: .");
+    expect(ci).not.toContain("cache: pnpm");
+    expect(ci).not.toContain("cache-dependency-path");
   });
 });
