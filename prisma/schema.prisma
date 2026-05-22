@@ -1,0 +1,262 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+enum UserRole {
+  user
+  admin
+}
+
+enum Language {
+  ko
+  en
+  zh
+}
+
+enum Level {
+  beginner
+  intermediate
+  advanced
+}
+
+enum Theme {
+  light
+  dark
+  system
+}
+
+enum SessionMode {
+  free_talk
+}
+
+enum MessageRole {
+  user
+  assistant
+}
+
+enum ProviderRole {
+  primary
+  fallback
+}
+
+enum ReviewGrade {
+  again
+  hard
+  good
+  easy
+}
+
+model User {
+  id             String                @id @default(cuid())
+  email          String                @unique
+  password_hash  String
+  created_at     DateTime              @default(now())
+  deleted_at     DateTime?
+  profile        UserProfile?
+  roles          UserRoleAssignment[]
+  settings       UserSettings?
+  sessions       ConversationSession[]
+  vocabulary     VocabularyItem[]
+  review_cards   ReviewCard[]
+  provider_logs  ProviderRequestLog[]
+  audit_logs     AuditLog[]            @relation("ActorAuditLogs")
+}
+
+model UserProfile {
+  id              String  @id @default(cuid())
+  user_id          String  @unique
+  display_name     String
+  avatar_url       String?
+  native_language  Language
+  user             User    @relation(fields: [user_id], references: [id], onDelete: Cascade)
+}
+
+model UserRoleAssignment {
+  id       String   @id @default(cuid())
+  user_id  String
+  role     UserRole
+  user     User     @relation(fields: [user_id], references: [id], onDelete: Cascade)
+
+  @@unique([user_id, role])
+}
+
+model UserSettings {
+  id                String   @id @default(cuid())
+  user_id            String   @unique
+  target_language    Language
+  level              Level
+  goal               String   @default("Everyday conversation")
+  default_speed      Float    @default(1)
+  theme              Theme    @default(system)
+  user               User     @relation(fields: [user_id], references: [id], onDelete: Cascade)
+}
+
+model AiProviderConfig {
+  id                 String       @id @default(cuid())
+  vendor             String
+  model              String
+  api_key_encrypted  String?
+  base_url           String?
+  is_active          Boolean      @default(true)
+  role               ProviderRole
+  last_health        String?
+  last_latency_ms    Int?
+  updated_by         String?
+  updated_at         DateTime     @updatedAt
+}
+
+model SttProviderConfig {
+  id                 String       @id @default(cuid())
+  vendor             String
+  model              String
+  api_key_encrypted  String?
+  base_url           String?
+  is_active          Boolean      @default(true)
+  role               ProviderRole
+  last_health        String?
+  last_latency_ms    Int?
+  updated_by         String?
+  updated_at         DateTime     @updatedAt
+}
+
+model TtsProviderConfig {
+  id                 String       @id @default(cuid())
+  vendor             String
+  model              String?
+  voice_id           String
+  voice_gender       String?
+  api_key_encrypted  String?
+  base_url           String?
+  is_active          Boolean      @default(true)
+  role               ProviderRole
+  last_health        String?
+  last_latency_ms    Int?
+  updated_by         String?
+  updated_at         DateTime     @updatedAt
+}
+
+model ConversationSession {
+  id               String                 @id @default(cuid())
+  user_id           String
+  target_language   Language
+  mode              SessionMode
+  level             Level
+  speed             Float
+  started_at        DateTime               @default(now())
+  ended_at          DateTime?
+  user              User                   @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  messages          ConversationMessage[]
+}
+
+model ConversationMessage {
+  id             String                    @id @default(cuid())
+  session_id     String
+  role           MessageRole
+  text           String
+  audio_url      String?
+  stt_provider   String?
+  llm_provider   String?
+  tts_provider   String?
+  latency_ms     Int?
+  created_at     DateTime                  @default(now())
+  session        ConversationSession       @relation(fields: [session_id], references: [id], onDelete: Cascade)
+  vocabulary     VocabularyItem[]
+  pronunciation  PronunciationFeedback?
+
+  @@index([session_id])
+}
+
+model VocabularyItem {
+  id                 String                 @id @default(cuid())
+  user_id             String
+  language            Language
+  term                String
+  reading             String?
+  meaning             String
+  source_message_id   String?
+  created_at          DateTime               @default(now())
+  deleted_at          DateTime?
+  user                User                   @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  source_message      ConversationMessage?   @relation(fields: [source_message_id], references: [id])
+  examples            VocabularyExample[]
+  review_card         ReviewCard?
+
+  @@index([user_id, language, deleted_at])
+}
+
+model VocabularyExample {
+  id                  String          @id @default(cuid())
+  vocabulary_item_id  String
+  sentence            String
+  translation         String?
+  vocabulary_item     VocabularyItem  @relation(fields: [vocabulary_item_id], references: [id], onDelete: Cascade)
+}
+
+model ReviewCard {
+  id                  String          @id @default(cuid())
+  vocabulary_item_id  String          @unique
+  user_id             String
+  ease                Float
+  interval_days       Int
+  repetitions         Int
+  due_at              DateTime
+  last_reviewed_at    DateTime?
+  vocabulary_item     VocabularyItem  @relation(fields: [vocabulary_item_id], references: [id], onDelete: Cascade)
+  user                User            @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  events              ReviewEvent[]
+
+  @@index([user_id, due_at])
+}
+
+model ReviewEvent {
+  id              String       @id @default(cuid())
+  review_card_id  String
+  grade           ReviewGrade
+  reviewed_at     DateTime     @default(now())
+  prev_interval   Int
+  next_interval   Int
+  review_card     ReviewCard   @relation(fields: [review_card_id], references: [id], onDelete: Cascade)
+}
+
+model PronunciationFeedback {
+  id             String                 @id @default(cuid())
+  message_id      String                 @unique
+  score           Float
+  phoneme_notes   String
+  created_at      DateTime               @default(now())
+  message         ConversationMessage    @relation(fields: [message_id], references: [id], onDelete: Cascade)
+}
+
+model AuditLog {
+  id             String    @id @default(cuid())
+  actor_user_id  String
+  action         String
+  target_type    String
+  target_id      String
+  metadata       String?
+  created_at     DateTime  @default(now())
+  actor          User      @relation("ActorAuditLogs", fields: [actor_user_id], references: [id], onDelete: Cascade)
+
+  @@index([actor_user_id, created_at])
+}
+
+model ProviderRequestLog {
+  id             String    @id @default(cuid())
+  trace_id        String
+  user_id         String
+  provider_kind   String
+  vendor          String
+  latency_ms      Int
+  status          String
+  error_code      String?
+  token_usage     String?
+  created_at      DateTime  @default(now())
+  user            User      @relation(fields: [user_id], references: [id], onDelete: Cascade)
+
+  @@index([created_at, provider_kind])
+}

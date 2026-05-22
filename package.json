@@ -1,0 +1,26 @@
+{
+  "name": "speakloop",
+  "private": true,
+  "packageManager": "pnpm@9.15.4",
+  "scripts": {
+    "predev": "pnpm validate:env",
+    "dev": "turbo dev",
+    "build": "turbo build",
+    "lint": "turbo lint",
+    "typecheck": "turbo typecheck",
+    "test": "turbo test",
+    "test:e2e": "turbo test:e2e",
+    "validate:env": "pnpm --filter @speakloop/web validate:env",
+    "prisma": "tsx scripts/prisma.ts",
+    "seed": "tsx prisma/seed.ts"
+  },
+  "devDependencies": {
+    "@prisma/client": "^6.19.0",
+    "@types/node": "^22.15.21",
+    "prisma": "^6.19.0",
+    "tsx": "^4.19.4",
+    "turbo": "^2.5.3",
+    "typescript": "^5.8.3",
+    "vitest": "^3.1.4"
+  }
+}

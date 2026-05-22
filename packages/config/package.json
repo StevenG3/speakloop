@@ -1,0 +1,23 @@
+{
+  "name": "@speakloop/config",
+  "private": true,
+  "type": "module",
+  "exports": {
+    "./eslint": "./eslint/index.js",
+    "./tailwind": "./tailwind/index.js"
+  },
+  "dependencies": {
+    "@eslint/js": "^9.27.0",
+    "typescript-eslint": "^8.32.1"
+  },
+  "devDependencies": {
+    "eslint": "^9.27.0"
+  },
+  "scripts": {
+    "build": "echo 'No build for @speakloop/config'",
+    "lint": "eslint .",
+    "typecheck": "echo 'No typecheck for @speakloop/config'",
+    "test": "echo 'No tests for @speakloop/config'",
+    "test:e2e": "echo 'No e2e tests for @speakloop/config'"
+  }
+}

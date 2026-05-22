@@ -1,0 +1,38 @@
+# dependencies
+node_modules/
+
+# build output
+.next/
+**/.next/
+dist/
+build/
+coverage/
+
+# caches and generated logs
+.turbo/
+**/.turbo/
+*.log
+npm-debug.log*
+pnpm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# local databases
+*.db
+*.db-journal
+*.sqlite
+*.sqlite-journal
+
+# env and secrets
+.env
+.env.*
+!.env.example
+
+# test output
+playwright-report/
+**/playwright-report/
+test-results/
+**/test-results/
+
+# system files
+.DS_Store

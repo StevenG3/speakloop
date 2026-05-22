@@ -1,0 +1,21 @@
+{
+  "name": "@speakloop/design-tokens",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "build": "tsc --noEmit",
+    "lint": "eslint .",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run --passWithNoTests",
+    "test:e2e": "echo 'No e2e tests for @speakloop/design-tokens'"
+  },
+  "devDependencies": {
+    "@speakloop/config": "workspace:*",
+    "eslint": "^9.27.0",
+    "typescript": "^5.8.3",
+    "vitest": "^3.1.4"
+  }
+}
