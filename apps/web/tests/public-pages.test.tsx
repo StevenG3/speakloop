@@ -13,12 +13,16 @@ let LandingPage: (typeof import("../app/(public)/LandingPageView"))["LandingPage
 let LoginForm: (typeof import("../app/(public)/login/LoginForm"))["LoginForm"];
 let RegisterPage: (typeof import("../app/(public)/register/RegisterPageView"))["RegisterPageView"];
 let OnboardingPage: (typeof import("../app/(public)/onboarding/OnboardingPageView"))["OnboardingPageView"];
+let ForgotPasswordPage: (typeof import("../app/(public)/forgot-password/ForgotPasswordPageView"))["ForgotPasswordPageView"];
+let ResetPasswordPage: (typeof import("../app/(public)/reset-password/ResetPasswordPageView"))["ResetPasswordPageView"];
 
 beforeAll(async () => {
   LandingPage = (await import("../app/(public)/LandingPageView")).LandingPageView;
   LoginForm = (await import("../app/(public)/login/LoginForm")).LoginForm;
   RegisterPage = (await import("../app/(public)/register/RegisterPageView")).RegisterPageView;
   OnboardingPage = (await import("../app/(public)/onboarding/OnboardingPageView")).OnboardingPageView;
+  ForgotPasswordPage = (await import("../app/(public)/forgot-password/ForgotPasswordPageView")).ForgotPasswordPageView;
+  ResetPasswordPage = (await import("../app/(public)/reset-password/ResetPasswordPageView")).ResetPasswordPageView;
 });
 
 afterEach(() => cleanup());
@@ -54,7 +58,34 @@ describe("public pages", () => {
     expect(screen.getByRole("heading", { name: "登录" })).toBeInTheDocument();
     expect(screen.getByLabelText("邮箱")).toBeRequired();
     expect(screen.getByLabelText("密码")).toBeRequired();
+    expect(screen.getByRole("link", { name: "忘记密码？" })).toHaveAttribute("href", "/forgot-password");
     expect(screen.getByRole("link", { name: "创建账号" })).toHaveAttribute("href", "/register");
+  });
+
+  it("shows failed login and reset success states in Chinese", () => {
+    const { rerender } = render(<LoginForm redirectTo="/app/practice" locale="zh-CN" error="invalid-credentials" />);
+
+    expect(screen.getByText("邮箱或密码不正确。")).toBeInTheDocument();
+
+    rerender(<LoginForm redirectTo="/app/practice" locale="zh-CN" reset="success" />);
+    expect(screen.getByText("密码已重置，请使用新密码登录。")).toBeInTheDocument();
+  });
+
+  it("renders the forgot-password flow in Chinese with an email reset affordance", () => {
+    render(<ForgotPasswordPage locale="zh-CN" resetLink="/reset-password?token=abc" sent />);
+
+    expect(screen.getByRole("heading", { name: "重置密码" })).toBeInTheDocument();
+    expect(screen.getByLabelText("邮箱")).toBeRequired();
+    expect(screen.getByText("如果这个邮箱存在，我们会发送密码重置链接。")).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "打开临时重置链接" })).toHaveAttribute("href", "/reset-password?token=abc");
+  });
+
+  it("renders the reset-password page in Chinese", () => {
+    render(<ResetPasswordPage locale="zh-CN" token="abc" />);
+
+    expect(screen.getByRole("heading", { name: "设置新密码" })).toBeInTheDocument();
+    expect(screen.getByLabelText("新密码")).toBeRequired();
+    expect(screen.getByDisplayValue("abc")).toHaveAttribute("name", "token");
   });
 
   it("renders register form with inline requirements", () => {

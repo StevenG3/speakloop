@@ -71,9 +71,29 @@ export const copy = {
       title: "Log in",
       email: "Email",
       password: "Password",
+      invalidCredentials: "Email or password is incorrect.",
+      resetSuccess: "Password reset. Log in with your new password.",
+      forgotPassword: "Forgot password?",
       submit: "Log in",
       newAccount: "New to SpeakLoop?",
       createAccount: "Create account"
+    },
+    forgotPassword: {
+      title: "Reset password",
+      body: "Enter your account email and we will send a password reset link.",
+      email: "Email",
+      submit: "Send reset link",
+      sent: "If this email exists, we sent a password reset link.",
+      stagingLink: "Open temporary reset link",
+      backToLogin: "Back to login"
+    },
+    resetPassword: {
+      title: "Set new password",
+      password: "New password",
+      passwordHelp: "Use at least 8 characters.",
+      submit: "Reset password",
+      invalid: "This reset link is invalid or expired.",
+      backToForgot: "Request a new link"
     },
     onboarding: {
       title: "Set your speaking loop",
@@ -129,9 +149,29 @@ export const copy = {
       title: "登录",
       email: "邮箱",
       password: "密码",
+      invalidCredentials: "邮箱或密码不正确。",
+      resetSuccess: "密码已重置，请使用新密码登录。",
+      forgotPassword: "忘记密码？",
       submit: "登录",
       newAccount: "还没有账号？",
       createAccount: "创建账号"
+    },
+    forgotPassword: {
+      title: "重置密码",
+      body: "输入账号邮箱，我们会发送密码重置链接。",
+      email: "邮箱",
+      submit: "发送重置链接",
+      sent: "如果这个邮箱存在，我们会发送密码重置链接。",
+      stagingLink: "打开临时重置链接",
+      backToLogin: "返回登录"
+    },
+    resetPassword: {
+      title: "设置新密码",
+      password: "新密码",
+      passwordHelp: "至少使用 8 个字符。",
+      submit: "重置密码",
+      invalid: "这个重置链接无效或已过期。",
+      backToForgot: "重新获取链接"
     },
     onboarding: {
       title: "设置你的口语循环",

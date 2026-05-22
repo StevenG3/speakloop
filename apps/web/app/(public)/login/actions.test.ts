@@ -36,4 +36,15 @@ describe("login action", () => {
       redirectTo: "/app/practice"
     });
   });
+
+  it("redirects invalid credentials back to login with a readable error", async () => {
+    signIn.mockRejectedValueOnce(Object.assign(new Error("CredentialsSignin"), { type: "CredentialsSignin" }));
+    const { loginAction } = await import("./actions");
+    const formData = new FormData();
+    formData.set("email", "demo@speakloop.dev");
+    formData.set("password", "wrong-password");
+    formData.set("redirectTo", "/app/practice");
+
+    await expect(loginAction(formData)).rejects.toThrow("redirect:/login?error=invalid-credentials&next=%2Fapp%2Fpractice");
+  });
 });
