@@ -60,7 +60,7 @@ pnpm build
 
 - STT reads deterministic fixture names like `hello-ko.wav`.
 - LLM returns a short tutor reply, corrections, and vocabulary candidates.
-- TTS returns a fixture-style audio URL keyed by text hash.
+- TTS returns the committed `/fixtures/audio/tts-mock.wav` file, so browser playback has no 404.
 - Provider request logs are written with a `trace_id` for each turn.
 
 To add a real provider later, implement the provider interface in `packages/core`, register it behind the provider registry/config tables, and keep mock providers available for tests.
@@ -78,3 +78,9 @@ pnpm build
 ```
 
 Playwright starts its own dev server on `127.0.0.1:3107`, runs the Phase-1 user/admin flows, and writes visual baselines under `apps/web/visual-baselines`.
+
+## iOS Native Path
+
+Round 2 uses the documentation-first native path instead of scaffolding `apps/mobile`. The concrete Expo Go, iOS simulator, permission, and TestFlight plan lives in `docs/IOS.md`.
+
+Short version: the future Expo app should import `@speakloop/core`, call the existing backend API, configure `NSMicrophoneUsageDescription`, and verify the same mock-provider loop in Expo Go before moving to TestFlight.

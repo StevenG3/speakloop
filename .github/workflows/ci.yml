@@ -16,16 +16,20 @@ jobs:
         with:
           node-version: 22
           cache: pnpm
-          cache-dependency-path: speakloop/pnpm-lock.yaml
+          cache-dependency-path: pnpm-lock.yaml
+      - run: git init
+        working-directory: .
       - run: pnpm install --frozen-lockfile
-        working-directory: speakloop
+        working-directory: .
       - run: pnpm lint
-        working-directory: speakloop
+        working-directory: .
       - run: pnpm typecheck
-        working-directory: speakloop
+        working-directory: .
       - run: pnpm test
-        working-directory: speakloop
+        working-directory: .
+      - run: pnpm exec playwright install --with-deps
+        working-directory: .
       - run: pnpm test:e2e
-        working-directory: speakloop
+        working-directory: .
       - run: pnpm build
-        working-directory: speakloop
+        working-directory: .

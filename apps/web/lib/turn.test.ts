@@ -6,7 +6,7 @@ import { MockLLM, MockSTT, MockTTS, type TTSProvider } from "@speakloop/core";
 import type { PrismaClient } from "@prisma/client";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import { createPrismaClient } from "./db";
-import { createConversationSession, handleMockTurn } from "./turn";
+import { createConversationSession, handleMockTurn, normalizeTurnBody } from "./turn";
 
 describe("turn orchestration", () => {
   let prisma: PrismaClient;
@@ -60,7 +60,7 @@ describe("turn orchestration", () => {
 
     expect(result.user_text).toContain("안녕하세요");
     expect(result.assistant_text).toContain("I heard you say");
-    expect(result.audio_url).toMatch(/^\/fixtures\/audio\/tts-/);
+    expect(result.audio_url).toBe("/fixtures/audio/tts-mock.wav");
     expect(result.vocab_candidates[0]?.term).toBe("연습");
     await expect(prisma.conversationMessage.count({ where: { session_id: sessionId } })).resolves.toBe(2);
     await expect(prisma.providerRequestLog.count({ where: { trace_id: result.trace_id } })).resolves.toBe(3);
@@ -87,5 +87,59 @@ describe("turn orchestration", () => {
     await expect(
       prisma.providerRequestLog.count({ where: { trace_id: result.trace_id, provider_kind: "tts", status: "error" } })
     ).resolves.toBe(1);
+  });
+
+  it("uses the registry-resolved provider config when explicit providers are not injected", async () => {
+    await prisma.aiProviderConfig.create({
+      data: { vendor: "configured-llm", model: "mock-configured", role: "primary", is_active: true }
+    });
+
+    const result = await handleMockTurn(prisma, {
+      session_id: sessionId,
+      user_id: userId,
+      audio_fixture: "hello-ko.wav"
+    });
+
+    await expect(
+      prisma.providerRequestLog.count({
+        where: { trace_id: result.trace_id, provider_kind: "llm", vendor: "configured-llm" }
+      })
+    ).resolves.toBe(1);
+  });
+
+  it("falls back through the registry when the configured primary provider fails", async () => {
+    await prisma.aiProviderConfig.create({
+      data: { vendor: "fail-mock", model: "mock-primary", role: "primary", is_active: true }
+    });
+    await prisma.aiProviderConfig.create({
+      data: { vendor: "fallback-llm", model: "mock-fallback", role: "fallback", is_active: true }
+    });
+
+    const result = await handleMockTurn(prisma, {
+      session_id: sessionId,
+      user_id: userId,
+      audio_fixture: "hello-ko.wav"
+    });
+
+    expect(result.assistant_text).toContain("I heard you say");
+    await expect(
+      prisma.providerRequestLog.count({
+        where: { trace_id: result.trace_id, provider_kind: "llm", vendor: "fallback-llm", status: "ok" }
+      })
+    ).resolves.toBe(1);
+  });
+
+  it("normalizes recorded audio metadata from the browser turn request", () => {
+    expect(
+      normalizeTurnBody({
+        session_id: "s1",
+        audio_fixture: "hello-ko.wav",
+        audio_blob: { type: "audio/webm", size: 2048 }
+      })
+    ).toEqual({
+      session_id: "s1",
+      audio_fixture: "hello-ko.wav",
+      audio_blob: { type: "audio/webm", size: 2048 }
+    });
   });
 });

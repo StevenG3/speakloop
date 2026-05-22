@@ -1,11 +1,31 @@
-import { mkdirSync } from "node:fs";
 import { expect, test, type Page } from "@playwright/test";
 
-const visualDir = "visual-baselines";
+const screenshotOptions = { fullPage: true, maxDiffPixels: 50 };
 
-test.beforeAll(() => {
-  mkdirSync(visualDir, { recursive: true });
-});
+for (const width of [375, 768, 1440]) {
+  test(`visual regression at ${width}px`, async ({ page }) => {
+    await page.setViewportSize({ width, height: 900 });
+    await page.goto("/");
+    await expect(page).toHaveScreenshot(`landing-${width}.png`, screenshotOptions);
+
+    await login(page, "demo@speakloop.dev", "demo12345");
+    await expect(page).toHaveScreenshot(`dashboard-${width}.png`, screenshotOptions);
+
+    await page.goto("/app/practice");
+    await page.getByRole("button", { name: "Start session" }).click();
+    await expect(page).toHaveScreenshot(`session-${width}.png`, screenshotOptions);
+
+    await page.goto("/app/vocab");
+    await expect(page).toHaveScreenshot(`vocab-${width}.png`, screenshotOptions);
+
+    await page.goto("/app/review");
+    await expect(page).toHaveScreenshot(`review-${width}.png`, screenshotOptions);
+
+    await login(page, "admin@speakloop.dev", "admin12345");
+    await page.goto("/admin/providers");
+    await expect(page).toHaveScreenshot(`admin-${width}.png`, screenshotOptions);
+  });
+}
 
 test("register and login flows are reachable", async ({ page }) => {
   await page.goto("/register");
@@ -26,6 +46,7 @@ test("creates a conversation, completes a mock turn, saves vocab, and reviews it
   await page.getByRole("button", { name: "Start session" }).click();
   await expect(page).toHaveURL(/\/app\/session\//);
 
+  await page.getByRole("button", { name: "Enable microphone" }).click();
   await page.getByRole("button", { name: "Push to talk" }).click();
   await expect(page.getByText("Save vocabulary")).toBeVisible();
   await page.getByRole("button", { name: /Save / }).first().click();
@@ -72,30 +93,14 @@ test("non-admin users are blocked from admin APIs and pages", async ({ page }) =
   await expect(page).toHaveURL(/\/app/);
 });
 
-for (const width of [375, 768, 1440]) {
-  test(`visual baselines at ${width}px`, async ({ page }) => {
-    await page.setViewportSize({ width, height: 900 });
-    await page.goto("/");
-    await page.screenshot({ path: `${visualDir}/landing-${width}.png`, fullPage: true });
+test("mobile viewport has no horizontal scroll and safe-area app chrome", async ({ page }) => {
+  await page.setViewportSize({ width: 375, height: 812 });
+  await login(page, "demo@speakloop.dev", "demo12345");
 
-    await login(page, "demo@speakloop.dev", "demo12345");
-    await page.screenshot({ path: `${visualDir}/dashboard-${width}.png`, fullPage: true });
-
-    await page.goto("/app/practice");
-    await page.getByRole("button", { name: "Start session" }).click();
-    await page.screenshot({ path: `${visualDir}/session-${width}.png`, fullPage: true });
-
-    await page.goto("/app/vocab");
-    await page.screenshot({ path: `${visualDir}/vocab-${width}.png`, fullPage: true });
-
-    await page.goto("/app/review");
-    await page.screenshot({ path: `${visualDir}/review-${width}.png`, fullPage: true });
-
-    await login(page, "admin@speakloop.dev", "admin12345");
-    await page.goto("/admin/providers");
-    await page.screenshot({ path: `${visualDir}/admin-${width}.png`, fullPage: true });
-  });
-}
+  const overflow = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
+  expect(overflow).toBeLessThanOrEqual(0);
+  await expect(page.locator('[class*="safe-area-inset-bottom"]').first()).toBeVisible();
+});
 
 async function login(page: Page, email: string, password: string) {
   await page.goto("/login");

@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { Badge, Button, Card, EmptyState } from "@/components/ui";
+import { Badge, Button, Card, EmptyState, Skeleton } from "@/components/ui";
 
 export type ReviewQueueCard = {
   id: string;
@@ -11,10 +11,30 @@ export type ReviewQueueCard = {
   progressLabel: string;
 };
 
-export function ReviewQueue({ cards }: { cards: ReviewQueueCard[] }) {
+export function ReviewQueue({ cards, loading = false, error }: { cards: ReviewQueueCard[]; loading?: boolean; error?: string }) {
   const [revealed, setRevealed] = useState(false);
   const [graded, setGraded] = useState<string | null>(null);
   const card = cards[0];
+
+  if (loading) {
+    return (
+      <main className="mx-auto grid max-w-3xl gap-6 p-4 text-[var(--text)]" aria-label="Loading review queue">
+        <Skeleton />
+        <Skeleton />
+      </main>
+    );
+  }
+
+  if (error) {
+    return (
+      <main className="mx-auto grid max-w-3xl gap-6 p-4 text-[var(--text)]">
+        <Card className="border-[var(--danger)]">
+          <h1 className="text-xl font-semibold">Review needs a refresh</h1>
+          <p className="mt-2 text-sm text-[var(--text-muted)]">{error}</p>
+        </Card>
+      </main>
+    );
+  }
 
   if (!card) {
     return (

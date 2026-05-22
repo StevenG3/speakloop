@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512" role="img" aria-label="SpeakLoop icon">
+  <rect width="512" height="512" rx="108" fill="#fffaf6"/>
+  <circle cx="256" cy="256" r="166" fill="#d9572b"/>
+  <path d="M178 272c24 48 83 67 134 37" fill="none" stroke="#fff" stroke-width="32" stroke-linecap="round"/>
+  <path d="M317 187c-27-22-70-27-104-8" fill="none" stroke="#1f8a70" stroke-width="32" stroke-linecap="round"/>
+</svg>

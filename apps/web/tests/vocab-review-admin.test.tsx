@@ -24,6 +24,15 @@ describe("vocabulary book UI", () => {
     expect(screen.getByText("No saved vocabulary yet")).toBeInTheDocument();
   });
 
+  it("shows loading and error states", () => {
+    const { rerender } = render(<VocabBook items={[]} loading />);
+
+    expect(screen.getByLabelText("Loading vocabulary")).toBeInTheDocument();
+
+    rerender(<VocabBook items={[]} error="Vocabulary unavailable" />);
+    expect(screen.getByText("Vocabulary unavailable")).toBeInTheDocument();
+  });
+
   it("filters grouped vocabulary by search text", async () => {
     render(
       <VocabBook
@@ -43,6 +52,15 @@ describe("vocabulary book UI", () => {
 });
 
 describe("review queue UI", () => {
+  it("shows loading and error states", () => {
+    const { rerender } = render(<ReviewQueue cards={[]} loading />);
+
+    expect(screen.getByLabelText("Loading review queue")).toBeInTheDocument();
+
+    rerender(<ReviewQueue cards={[]} error="Review unavailable" />);
+    expect(screen.getByText("Review unavailable")).toBeInTheDocument();
+  });
+
   it("reveals answers and exposes grade buttons with progress", async () => {
     render(
       <ReviewQueue
@@ -89,5 +107,12 @@ describe("admin UI", () => {
     expect(screen.getByText("LLM")).toBeInTheDocument();
     expect(screen.getByText("sk-•••••1234")).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Test LLM connection" })).toBeInTheDocument();
+  });
+
+  it("visually separates admin pages from learner pages", () => {
+    render(<ProviderAdmin configs={[]} />);
+
+    expect(screen.getByText("Admin console")).toBeInTheDocument();
+    expect(screen.getByText("Provider config is hidden from learner navigation.")).toBeInTheDocument();
   });
 });

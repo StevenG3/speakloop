@@ -70,4 +70,17 @@ describe("session view", () => {
     expect(screen.getByText("Tutor is thinking slowly.")).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Retry turn" })).toBeInTheDocument();
   });
+
+  it("shows a microphone permission gate before prompting for access", () => {
+    const getUserMedia = vi.fn();
+    Object.defineProperty(navigator, "mediaDevices", {
+      configurable: true,
+      value: { getUserMedia }
+    });
+
+    render(<SessionView sessionId="s1" status="idle" messages={[]} />);
+
+    expect(screen.getByRole("heading", { name: "Enable microphone" })).toBeInTheDocument();
+    expect(getUserMedia).not.toHaveBeenCalled();
+  });
 });

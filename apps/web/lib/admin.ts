@@ -1,6 +1,6 @@
 import { Prisma, type AiProviderConfig, type PrismaClient, type ProviderRole, type SttProviderConfig, type TtsProviderConfig } from "@prisma/client";
 import { maskSecret } from "./auth";
-import { encryptSecret } from "./secrets";
+import { decryptSecret, encryptSecret } from "./secrets";
 
 export type ProviderKind = "llm" | "stt" | "tts";
 
@@ -86,7 +86,7 @@ export function serializeProvider(kind: ProviderKind, config: ProviderConfig) {
     model: "model" in config ? config.model : null,
     voice_id: "voice_id" in config ? config.voice_id : null,
     voice_gender: "voice_gender" in config ? config.voice_gender : null,
-    api_key_masked: config.api_key_encrypted ? maskSecret("sk-secret-1234") : "",
+    api_key_masked: config.api_key_encrypted ? maskSecret(decryptSecret(config.api_key_encrypted)) : "",
     base_url: config.base_url,
     role: config.role,
     is_active: config.is_active,

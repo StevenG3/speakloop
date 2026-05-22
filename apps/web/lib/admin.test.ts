@@ -26,16 +26,16 @@ describe("admin provider service", () => {
     const config = await createProviderConfig(prisma, adminId, "llm", {
       vendor: "mock",
       model: "mock-chat",
-      api_key: "sk-secret-1234",
+      api_key: "sk-secret-9876",
       base_url: "https://mock.local",
       role: "primary",
       is_active: true
     });
 
-    expect(config.api_key_masked).toBe(maskSecret("sk-secret-1234"));
+    expect(config.api_key_masked).toBe(maskSecret("sk-secret-9876"));
     const raw = await prisma.aiProviderConfig.findUniqueOrThrow({ where: { id: config.id } });
     expect(raw.api_key_encrypted).not.toContain("sk-secret");
-    expect(decryptSecret(raw.api_key_encrypted ?? "")).toBe("sk-secret-1234");
+    expect(decryptSecret(raw.api_key_encrypted ?? "")).toBe("sk-secret-9876");
   });
 
   it("updates provider config and writes an audit log", async () => {

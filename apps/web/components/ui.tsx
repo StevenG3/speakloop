@@ -146,8 +146,10 @@ export function Toast({ title }: { title: string }) {
 
 export function AppShell({ nav, children }: { nav: ReactNode; children: ReactNode }) {
   return (
-    <div className="min-h-screen bg-[var(--bg)] text-[var(--text)]">
-      <nav className="border-b border-[var(--border)] px-4 py-3">{nav}</nav>
+    <div className="min-h-screen bg-[radial-gradient(circle_at_top_left,var(--surface-elevated),var(--bg)_42%,var(--bg))] text-[var(--text)] pt-[env(safe-area-inset-top)] pb-[env(safe-area-inset-bottom)]">
+      <nav className="border-b border-[var(--border)] bg-[color-mix(in_srgb,var(--surface)_86%,transparent)] px-4 py-3 shadow-sm backdrop-blur">
+        {nav}
+      </nav>
       <main className="mx-auto w-full max-w-6xl px-4 py-6">{children}</main>
     </div>
   );

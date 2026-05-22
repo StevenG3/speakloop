@@ -26,9 +26,11 @@ export function ProviderAdmin({ configs }: { configs: ProviderAdminConfig[] }) {
 
   return (
     <main className="mx-auto grid max-w-5xl gap-6 p-4 text-[var(--text)]">
-      <header>
-        <h1 className="text-2xl font-bold">Provider Config</h1>
+      <header className="rounded-lg border border-[var(--border)] bg-[var(--surface-elevated)] p-4 shadow-sm">
+        <p className="text-sm font-semibold uppercase text-[var(--text-muted)]">Admin console</p>
+        <h1 className="mt-1 text-2xl font-bold">Provider Config</h1>
         <p className="text-sm text-[var(--text-muted)]">Mock-ready provider settings for Phase 1.</p>
+        <p className="mt-2 text-sm text-[var(--text-muted)]">Provider config is hidden from learner navigation.</p>
       </header>
       <div className="grid gap-4 md:grid-cols-3">
         {configs.map((config) => (

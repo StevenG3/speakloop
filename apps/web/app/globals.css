@@ -2,6 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Generated from @speakloop/design-tokens cssVariables() */
 :root {
   --bg: #fffaf6;
   --surface: #ffffff;

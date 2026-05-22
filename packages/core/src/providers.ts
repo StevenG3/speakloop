@@ -119,9 +119,10 @@ export class MockTTS implements TTSProvider {
   readonly id = "mock-tts";
 
   async synthesize(input: TTSRequest): Promise<TTSResponse> {
+    void input;
     return {
       provider_id: this.id,
-      audio_url: `/fixtures/audio/tts-${hashText(`${input.language}:${input.speed}:${input.text}`)}.wav`,
+      audio_url: "/fixtures/audio/tts-mock.wav",
       voice_id: "mock-voice"
     };
   }
@@ -159,12 +160,4 @@ export function resolveProviderPair<TProvider extends { testConnection(): Promis
       };
     }
   });
-}
-
-function hashText(text: string) {
-  let hash = 0;
-  for (let index = 0; index < text.length; index += 1) {
-    hash = (hash * 31 + text.charCodeAt(index)) >>> 0;
-  }
-  return hash.toString(16);
 }

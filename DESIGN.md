@@ -4,6 +4,8 @@
 
 SpeakLoop is a modern, warm, motivating language-learning app. The UI is mobile-first, high contrast, generous with whitespace, and calm enough for anxious speaking practice.
 
+Round-2 direction: Warm elevated gradient surfaces, iOS-native restraint, and friendly coaching energy. The app should feel premium without becoming decorative: soft light, tactile cards, generous touch zones, and emotionally clear state changes.
+
 ## Typography
 
 - Display family: `Inter, ui-sans-serif, system-ui, sans-serif`
@@ -68,6 +70,25 @@ Use one primary action per view. Variants are `primary`, `secondary`, `ghost`, a
 ## Skeletons
 
 Use shimmering blocks that match final layout dimensions. Do not use spinners for page content.
+
+## Elevation scale
+
+- Level 0: page background, a Warm elevated gradient from `--bg` to `--surface-elevated`.
+- Level 1: normal cards, `--surface` with a subtle border and soft shadow.
+- Level 2: active voice / review cards, slightly stronger shadow and a glass-like `--surface` overlay.
+- Level 3: modal/admin critical surfaces, stronger contrast and clearer border.
+
+## Voice interaction area
+
+The session screen must reserve a large Voice interaction area above the transcript. It changes copy and visual emphasis for idle, recording, transcribing, thinking, speaking, and error. Recording is warm and active; transcribing/thinking are calm and in-progress; errors stay visible with a retry path.
+
+## Admin separation
+
+Admin pages use a more technical console treatment, darker/elevated headers, and explicit "Admin console" labeling. Provider model, voice, voice-gender, and key controls never appear in learner navigation.
+
+## Loading / empty / error states
+
+Every list page must have concrete loading, empty, and error states. Loading uses skeletons, empty states offer the next best action, and errors are visible cards with human-readable recovery copy.
 
 ## UI Acceptance Criteria
 

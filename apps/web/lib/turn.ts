@@ -1,8 +1,5 @@
 import {
   extractVocabularyDrafts,
-  MockLLM,
-  MockSTT,
-  MockTTS,
   type Language,
   type Level,
   type LLMProvider,
@@ -11,6 +8,7 @@ import {
   type VocabCandidate
 } from "@speakloop/core";
 import type { PrismaClient } from "@prisma/client";
+import { resolveProviders } from "./provider-registry";
 
 type Providers = {
   stt: STTProvider;
@@ -40,17 +38,20 @@ export async function handleMockTurn(
     session_id: string;
     user_id: string;
     audio_fixture: string;
+    audio_blob?: { type: string; size: number };
+    speed?: number;
     providers?: Providers;
   }
 ) {
   const trace_id = `trace-${crypto.randomUUID()}`;
   const session = await prisma.conversationSession.findUniqueOrThrow({ where: { id: input.session_id } });
-  const providers = input.providers ?? { stt: new MockSTT(), llm: new MockLLM(), tts: new MockTTS() };
+  const providers = input.providers ?? (await resolveProviders(prisma));
+  const turnSpeed = input.speed ?? session.speed;
 
   const stt = await timedCall(() =>
     providers.stt.transcribe({ audio_fixture: input.audio_fixture, language: session.target_language })
   );
-  await logProvider(prisma, trace_id, input.user_id, "stt", providers.stt.id, stt);
+  await logProvider(prisma, trace_id, input.user_id, "stt", stt.ok ? stt.value.provider_id : providers.stt.id, stt);
   if (!stt.ok) {
     throw new Error("STT failed");
   }
@@ -72,15 +73,15 @@ export async function handleMockTurn(
       level: session.level
     })
   );
-  await logProvider(prisma, trace_id, input.user_id, "llm", providers.llm.id, llm);
+  await logProvider(prisma, trace_id, input.user_id, "llm", llm.ok ? llm.value.provider_id : providers.llm.id, llm);
   if (!llm.ok) {
     throw new Error("LLM failed");
   }
 
   const tts = await timedCall(() =>
-    providers.tts.synthesize({ text: llm.value.reply, language: session.target_language, speed: session.speed })
+    providers.tts.synthesize({ text: llm.value.reply, language: session.target_language, speed: turnSpeed })
   );
-  await logProvider(prisma, trace_id, input.user_id, "tts", providers.tts.id, tts);
+  await logProvider(prisma, trace_id, input.user_id, "tts", tts.ok ? tts.value.provider_id : providers.tts.id, tts);
 
   await prisma.conversationMessage.create({
     data: {
@@ -110,7 +111,12 @@ export async function handleMockTurn(
   };
 }
 
-export function normalizeTurnBody(body: unknown): { session_id: string; audio_fixture: string } {
+export function normalizeTurnBody(body: unknown): {
+  session_id: string;
+  audio_fixture: string;
+  audio_blob?: { type: string; size: number };
+  speed?: number;
+} {
   if (!body || typeof body !== "object") {
     throw new Error("Invalid turn request");
   }
@@ -118,7 +124,24 @@ export function normalizeTurnBody(body: unknown): { session_id: string; audio_fi
   if (typeof data.session_id !== "string" || typeof data.audio_fixture !== "string") {
     throw new Error("Invalid turn request");
   }
-  return { session_id: data.session_id, audio_fixture: data.audio_fixture };
+  const audioBlob = normalizeAudioBlob(data.audio_blob);
+  return {
+    session_id: data.session_id,
+    audio_fixture: data.audio_fixture,
+    ...(typeof data.speed === "number" ? { speed: data.speed } : {}),
+    ...(audioBlob ? { audio_blob: audioBlob } : {})
+  };
+}
+
+function normalizeAudioBlob(value: unknown) {
+  if (!value || typeof value !== "object") {
+    return null;
+  }
+  const data = value as Record<string, unknown>;
+  if (typeof data.type !== "string" || typeof data.size !== "number" || data.size <= 0) {
+    return null;
+  }
+  return { type: data.type, size: data.size };
 }
 
 async function timedCall<T>(call: () => Promise<T>) {

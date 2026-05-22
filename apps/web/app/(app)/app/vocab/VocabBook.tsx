@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useMemo, useState } from "react";
-import { Badge, Button, Card, EmptyState, Input } from "@/components/ui";
+import { Badge, Button, Card, EmptyState, Input, Skeleton } from "@/components/ui";
 
 export type VocabBookItem = {
   id: string;
@@ -15,7 +15,7 @@ export type VocabBookItem = {
 
 const languageLabels = { ko: "Korean", en: "English", zh: "Chinese" };
 
-export function VocabBook({ items }: { items: VocabBookItem[] }) {
+export function VocabBook({ items, loading = false, error }: { items: VocabBookItem[]; loading?: boolean; error?: string }) {
   const [query, setQuery] = useState("");
   const filtered = useMemo(() => {
     const normalized = query.trim().toLowerCase();
@@ -50,10 +50,22 @@ export function VocabBook({ items }: { items: VocabBookItem[] }) {
         />
       </header>
 
-      {items.length === 0 ? <EmptyState title="No saved vocabulary yet" /> : null}
-      {items.length > 0 && filtered.length === 0 ? <EmptyState title="No vocabulary matches your search" /> : null}
+      {loading ? (
+        <div className="grid gap-3" aria-label="Loading vocabulary">
+          <Skeleton />
+          <Skeleton />
+        </div>
+      ) : null}
+      {error ? (
+        <Card className="border-[var(--danger)]">
+          <h2 className="font-semibold">Vocabulary needs a refresh</h2>
+          <p className="mt-2 text-sm text-[var(--text-muted)]">{error}</p>
+        </Card>
+      ) : null}
+      {!loading && !error && items.length === 0 ? <EmptyState title="No saved vocabulary yet" /> : null}
+      {!loading && !error && items.length > 0 && filtered.length === 0 ? <EmptyState title="No vocabulary matches your search" /> : null}
 
-      {(["ko", "en", "zh"] as const).map((language) =>
+      {!loading && !error ? (["ko", "en", "zh"] as const).map((language) =>
         groups[language].length > 0 ? (
           <section key={language} className="grid gap-3">
             <h2 className="text-lg font-semibold">{languageLabels[language]}</h2>
@@ -64,7 +76,7 @@ export function VocabBook({ items }: { items: VocabBookItem[] }) {
             </div>
           </section>
         ) : null
-      )}
+      ) : null}
     </main>
   );
 }

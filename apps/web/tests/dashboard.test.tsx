@@ -29,6 +29,15 @@ describe("dashboard", () => {
     expect(screen.getByText("Start your first conversation")).toBeInTheDocument();
   });
 
+  it("renders loading and error states", () => {
+    const { rerender } = render(<Dashboard displayName="Demo" dueCount={0} streakDays={0} recentSessions={[]} loading />);
+
+    expect(screen.getByLabelText("Loading dashboard")).toBeInTheDocument();
+
+    rerender(<Dashboard displayName="Demo" dueCount={0} streakDays={0} recentSessions={[]} error="Dashboard unavailable" />);
+    expect(screen.getByText("Dashboard unavailable")).toBeInTheDocument();
+  });
+
   it("links to practice from the primary CTA", () => {
     render(<Dashboard displayName="Demo" dueCount={0} streakDays={0} recentSessions={[]} />);
 

@@ -13,13 +13,15 @@ export function Dashboard({
   dueCount,
   streakDays,
   recentSessions,
-  loading = false
+  loading = false,
+  error
 }: {
   displayName: string;
   dueCount: number;
   streakDays: number;
   recentSessions: RecentSession[];
   loading?: boolean;
+  error?: string;
 }) {
   if (loading) {
     return (
@@ -27,6 +29,15 @@ export function Dashboard({
         <Skeleton aria-label="Loading dashboard" />
         <Skeleton />
       </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <Card className="border-[var(--danger)]">
+        <h1 className="text-xl font-semibold">Dashboard needs a refresh</h1>
+        <p className="mt-2 text-sm text-[var(--text-muted)]">{error}</p>
+      </Card>
     );
   }
 
