@@ -72,6 +72,7 @@ export const copy = {
       email: "Email",
       password: "Password",
       invalidCredentials: "Email or password is incorrect.",
+      tryAgain: "Login is temporarily unavailable. Please try again.",
       resetSuccess: "Password reset. Log in with your new password.",
       forgotPassword: "Forgot password?",
       submit: "Log in",
@@ -84,6 +85,7 @@ export const copy = {
       email: "Email",
       submit: "Send reset link",
       sent: "If this email exists, we sent a password reset link.",
+      tryAgain: "Password reset is temporarily unavailable. Please try again.",
       stagingLink: "Open temporary reset link",
       backToLogin: "Back to login"
     },
@@ -150,6 +152,7 @@ export const copy = {
       email: "邮箱",
       password: "密码",
       invalidCredentials: "邮箱或密码不正确。",
+      tryAgain: "登录服务暂时不可用，请稍后再试。",
       resetSuccess: "密码已重置，请使用新密码登录。",
       forgotPassword: "忘记密码？",
       submit: "登录",
@@ -162,6 +165,7 @@ export const copy = {
       email: "邮箱",
       submit: "发送重置链接",
       sent: "如果这个邮箱存在，我们会发送密码重置链接。",
+      tryAgain: "密码重置服务暂时不可用，请稍后再试。",
       stagingLink: "打开临时重置链接",
       backToLogin: "返回登录"
     },

@@ -47,4 +47,27 @@ describe("login action", () => {
 
     await expect(loginAction(formData)).rejects.toThrow("redirect:/login?error=invalid-credentials&next=%2Fapp%2Fpractice");
   });
+
+  it("redirects unexpected authentication failures to a readable retry state", async () => {
+    signIn.mockRejectedValueOnce(new Error("Auth backend unavailable"));
+    const { loginAction } = await import("./actions");
+    const formData = new FormData();
+    formData.set("email", "demo@speakloop.dev");
+    formData.set("password", "demo12345");
+    formData.set("redirectTo", "/app/practice");
+
+    await expect(loginAction(formData)).rejects.toThrow("redirect:/login?error=try-again&next=%2Fapp%2Fpractice");
+  });
+
+  it("preserves framework redirects from successful NextAuth sign-in", async () => {
+    const nextRedirect = Object.assign(new Error("NEXT_REDIRECT"), { digest: "NEXT_REDIRECT;replace;/app/practice;307;" });
+    signIn.mockRejectedValueOnce(nextRedirect);
+    const { loginAction } = await import("./actions");
+    const formData = new FormData();
+    formData.set("email", "demo@speakloop.dev");
+    formData.set("password", "demo12345");
+    formData.set("redirectTo", "/app/practice");
+
+    await expect(loginAction(formData)).rejects.toBe(nextRedirect);
+  });
 });

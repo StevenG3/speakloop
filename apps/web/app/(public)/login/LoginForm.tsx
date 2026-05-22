@@ -5,7 +5,7 @@ import { Button, Card, Input } from "@/components/ui";
 import { copy, type Locale } from "@/lib/i18n";
 import { loginAction } from "./actions";
 
-type LoginError = "invalid-credentials";
+type LoginError = "invalid-credentials" | "try-again";
 type ResetState = "success";
 
 export function LoginForm({
@@ -35,6 +35,11 @@ export function LoginForm({
           {error === "invalid-credentials" ? (
             <p className="mt-4 rounded-md border border-red-200 bg-red-50 px-3 py-2 text-sm font-medium text-red-700" role="alert">
               {t.invalidCredentials}
+            </p>
+          ) : null}
+          {error === "try-again" ? (
+            <p className="mt-4 rounded-md border border-red-200 bg-red-50 px-3 py-2 text-sm font-medium text-red-700" role="alert">
+              {t.tryAgain}
             </p>
           ) : null}
           {reset === "success" ? (

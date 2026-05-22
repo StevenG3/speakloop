@@ -6,7 +6,7 @@ export default async function LoginPage({ searchParams }: { searchParams?: Promi
   const params = await searchParams;
   const locale = await getRequestLocale();
   const redirectTo = getLoginRedirect(params?.next);
-  const error = params?.error === "invalid-credentials" ? "invalid-credentials" : undefined;
+  const error = params?.error === "invalid-credentials" || params?.error === "try-again" ? params.error : undefined;
   const reset = params?.reset === "success" ? "success" : undefined;
 
   if (error && reset) {

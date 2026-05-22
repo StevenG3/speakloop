@@ -69,6 +69,9 @@ describe("public pages", () => {
 
     rerender(<LoginForm redirectTo="/app/practice" locale="zh-CN" reset="success" />);
     expect(screen.getByText("密码已重置，请使用新密码登录。")).toBeInTheDocument();
+
+    rerender(<LoginForm redirectTo="/app/practice" locale="zh-CN" error="try-again" />);
+    expect(screen.getByText("登录服务暂时不可用，请稍后再试。")).toBeInTheDocument();
   });
 
   it("renders the forgot-password flow in Chinese with an email reset affordance", () => {

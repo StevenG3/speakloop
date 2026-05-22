@@ -14,12 +14,17 @@ export async function loginAction(formData: FormData) {
       redirectTo
     });
   } catch (error) {
+    if (isNextRedirectError(error)) {
+      throw error;
+    }
+
     if (isCredentialsError(error)) {
       const params = new URLSearchParams({ error: "invalid-credentials", next: redirectTo });
       redirect(`/login?${params.toString()}`);
     }
 
-    throw error;
+    const params = new URLSearchParams({ error: "try-again", next: redirectTo });
+    redirect(`/login?${params.toString()}`);
   }
 }
 
@@ -27,5 +32,12 @@ function isCredentialsError(error: unknown) {
   return (
     error instanceof Error &&
     (error.message.includes("CredentialsSignin") || "type" in error && error.type === "CredentialsSignin")
+  );
+}
+
+function isNextRedirectError(error: unknown) {
+  return (
+    error instanceof Error &&
+    ("digest" in error && typeof error.digest === "string" && error.digest.startsWith("NEXT_REDIRECT"))
   );
 }

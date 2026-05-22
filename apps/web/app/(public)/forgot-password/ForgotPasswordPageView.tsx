@@ -8,10 +8,12 @@ import { requestPasswordResetAction } from "./actions";
 export function ForgotPasswordPageView({
   locale = "en-US",
   sent = false,
+  error,
   resetLink
 }: {
   locale?: Locale;
   sent?: boolean;
+  error?: "try-again";
   resetLink?: string;
 }) {
   const t = copy[locale].forgotPassword;
@@ -37,6 +39,11 @@ export function ForgotPasswordPageView({
                 </Link>
               ) : null}
             </div>
+          ) : null}
+          {error === "try-again" ? (
+            <p className="mt-4 rounded-md border border-red-200 bg-red-50 px-3 py-2 text-sm font-medium text-red-700" role="alert">
+              {t.tryAgain}
+            </p>
           ) : null}
           <form action={requestPasswordResetAction} className="mt-6 grid gap-4">
             <label className="grid gap-2 text-sm font-medium">

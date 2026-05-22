@@ -37,4 +37,15 @@ describe("password reset", () => {
   it("does not reveal whether an email exists", async () => {
     await expect(createPasswordReset(prisma, "missing@speakloop.dev")).resolves.toBeNull();
   });
+
+  it("rejects expired tokens without changing the password", async () => {
+    const reset = await createPasswordReset(prisma, "reset@speakloop.dev", new Date("2026-05-22T00:00:00Z"));
+
+    await expect(resetPasswordWithToken(prisma, reset!.token, "new-password", new Date("2026-05-22T00:31:00Z"))).resolves.toBe(
+      "invalid"
+    );
+
+    const user = await prisma.user.findUniqueOrThrow({ where: { email: "reset@speakloop.dev" } });
+    expect(await verifyPassword("old-password", user.password_hash)).toBe(true);
+  });
 });
