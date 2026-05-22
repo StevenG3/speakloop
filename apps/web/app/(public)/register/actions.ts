@@ -11,7 +11,7 @@ export async function registerAction(formData: FormData) {
     email: String(formData.get("email") ?? ""),
     password: String(formData.get("password") ?? ""),
     displayName: String(formData.get("displayName") ?? ""),
-    nativeLanguage: "en"
+    nativeLanguage: String(formData.get("nativeLanguage") ?? "en") as "ko" | "en" | "zh"
   });
 
   redirect("/onboarding");

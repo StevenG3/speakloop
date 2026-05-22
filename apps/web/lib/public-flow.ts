@@ -9,7 +9,8 @@ export const loginSchema = z.object({
 export const registerFormSchema = z.object({
   email: z.string().email("Enter a valid email."),
   password: z.string().min(8, "Use at least 8 characters."),
-  displayName: z.string().min(1, "Display name is required.")
+  displayName: z.string().min(1, "Display name is required."),
+  nativeLanguage: z.enum(["ko", "en", "zh"])
 });
 
 export const onboardingSchema = z.object({

@@ -3,7 +3,7 @@ import "@testing-library/jest-dom/vitest";
 import React from "react";
 import { cleanup, render, screen } from "@testing-library/react";
 import { afterEach, describe, expect, it } from "vitest";
-import AppLayout from "../app/(app)/layout";
+import { AppLayoutFrame } from "../app/(app)/AppLayoutFrame";
 import { HistoryList } from "../app/(app)/app/history/HistoryList";
 import { SettingsPanel } from "../app/(app)/app/settings/SettingsPanel";
 
@@ -12,9 +12,9 @@ afterEach(() => cleanup());
 describe("app navigation and missing pages", () => {
   it("renders the mobile-first app nav around app pages", () => {
     render(
-      <AppLayout>
+      <AppLayoutFrame>
         <h1>Inside app</h1>
-      </AppLayout>
+      </AppLayoutFrame>
     );
 
     expect(screen.getByRole("navigation", { name: "App navigation" })).toBeInTheDocument();
@@ -23,6 +23,19 @@ describe("app navigation and missing pages", () => {
     expect(screen.getByRole("link", { name: "Vocab" })).toHaveAttribute("href", "/app/vocab");
     expect(screen.getByRole("link", { name: "Review" })).toHaveAttribute("href", "/app/review");
     expect(screen.getByRole("link", { name: "Settings" })).toHaveAttribute("href", "/app/settings");
+  });
+
+  it("renders the app nav in Chinese when selected", () => {
+    render(
+      <AppLayoutFrame locale="zh-CN">
+        <h1>Inside app</h1>
+      </AppLayoutFrame>
+    );
+
+    expect(screen.getByRole("navigation", { name: "应用导航" })).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "练习" })).toHaveAttribute("href", "/app/practice");
+    expect(screen.getByRole("link", { name: "复习" })).toHaveAttribute("href", "/app/review");
+    expect(screen.getByRole("button", { name: "中文" })).toBeInTheDocument();
   });
 
   it("renders history empty and populated states", () => {

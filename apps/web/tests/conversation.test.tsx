@@ -25,6 +25,14 @@ describe("practice setup", () => {
     expect(screen.getByRole("radio", { name: "Pronunciation Locked" })).toBeDisabled();
     expect(screen.getByRole("slider", { name: "Speed" })).toHaveAttribute("min", "0.5");
   });
+
+  it("offers Chinese target-language labels in Chinese UI", () => {
+    render(<PracticeSetup defaultSpeed={1} targetLanguage="zh" locale="zh-CN" />);
+
+    expect(screen.getByRole("radio", { name: "中文" })).toBeChecked();
+    expect(screen.getByRole("radio", { name: "韩语" })).toBeEnabled();
+    expect(screen.getByRole("button", { name: "开始会话" })).toBeInTheDocument();
+  });
 });
 
 describe("session view", () => {

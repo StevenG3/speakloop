@@ -40,9 +40,18 @@ describe("public auth and onboarding flow", () => {
       validateRegisterInput({
         email: "ok@speakloop.dev",
         password: "password123",
-        displayName: "Ok"
+        displayName: "Ok",
+        nativeLanguage: "zh"
       }).success
     ).toBe(true);
+    expect(
+      validateRegisterInput({
+        email: "ok@speakloop.dev",
+        password: "password123",
+        displayName: "Ok",
+        nativeLanguage: "fr"
+      }).success
+    ).toBe(false);
   });
 
   it("persists onboarding target language, level, and goal to user settings", async () => {
