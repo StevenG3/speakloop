@@ -4,7 +4,9 @@ import { Button, Card, Input } from "@/components/ui";
 import { copy, languageLabels, languages, type Locale } from "@/lib/i18n";
 import { registerAction } from "./actions";
 
-export function RegisterPageView({ locale = "en-US" }: { locale?: Locale }) {
+type RegisterError = "email-registered";
+
+export function RegisterPageView({ locale = "en-US", error }: { locale?: Locale; error?: RegisterError }) {
   const t = copy[locale].register;
   const labels = {
     ...languageLabels[locale],
@@ -19,6 +21,11 @@ export function RegisterPageView({ locale = "en-US" }: { locale?: Locale }) {
         </div>
         <Card>
           <h1 className="text-2xl font-bold">{t.title}</h1>
+          {error === "email-registered" ? (
+            <p className="mt-4 rounded-md border border-red-200 bg-red-50 px-3 py-2 text-sm font-medium text-red-700" role="alert">
+              {t.duplicateEmail}
+            </p>
+          ) : null}
           <form action={registerAction} className="mt-6 grid gap-4">
             <label className="grid gap-2 text-sm font-medium">
               {t.displayName}

@@ -61,6 +61,12 @@ describe("public pages", () => {
     expect(screen.getByRole("button", { name: "创建账号" })).toBeInTheDocument();
   });
 
+  it("shows duplicate-email registration errors in Chinese", () => {
+    render(<RegisterPage locale="zh-CN" error="email-registered" />);
+
+    expect(screen.getByText("这个邮箱已经注册过，请直接登录或换一个邮箱。")).toBeInTheDocument();
+  });
+
   it("renders onboarding choices for MVP languages and levels", () => {
     render(<OnboardingPage />);
 

@@ -61,6 +61,7 @@ export const copy = {
       password: "Password",
       nativeLanguage: "Native language",
       passwordHelp: "Use at least 8 characters.",
+      duplicateEmail: "This email is already registered. Sign in or use another email.",
       submit: "Create account"
     },
     onboarding: {
@@ -107,6 +108,7 @@ export const copy = {
       password: "密码",
       nativeLanguage: "母语",
       passwordHelp: "至少使用 8 个字符。",
+      duplicateEmail: "这个邮箱已经注册过，请直接登录或换一个邮箱。",
       submit: "创建账号"
     },
     onboarding: {
