@@ -25,7 +25,7 @@ jobs:
         working-directory: .
       - run: pnpm test
         working-directory: .
-      - run: pnpm exec playwright install --with-deps
+      - run: pnpm --filter @speakloop/web exec playwright install --with-deps
         working-directory: .
       - run: pnpm test:e2e
         working-directory: .

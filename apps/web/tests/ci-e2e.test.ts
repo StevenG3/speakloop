@@ -16,7 +16,7 @@ describe("CI and Playwright visual regression", () => {
     const ci = readFileSync(join(process.cwd(), "../../.github/workflows/ci.yml"), "utf8");
 
     expect(ci).toContain("git init");
-    expect(ci).toContain("pnpm exec playwright install --with-deps");
+    expect(ci).toContain("pnpm --filter @speakloop/web exec playwright install --with-deps");
     expect(ci).toContain("working-directory: .");
     expect(ci).not.toContain("cache: pnpm");
     expect(ci).not.toContain("cache-dependency-path");
