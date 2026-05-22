@@ -34,6 +34,8 @@ pnpm dev
 
 `pnpm dev` starts the web app through Turborepo. By default it uses mock providers, so the full conversation loop works locally without external services.
 
+For physical iPhone validation over HTTPS, use the staging checklist in `docs/IPHONE_STAGING.md`.
+
 ## Seeded Accounts
 
 - Demo learner: `demo@speakloop.dev` / `demo12345`

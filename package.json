@@ -11,6 +11,7 @@
     "test": "turbo test",
     "test:e2e": "turbo test:e2e",
     "validate:env": "pnpm --filter @speakloop/web validate:env",
+    "ios:prepare": "pnpm validate:env && pnpm prisma migrate dev && pnpm seed",
     "prisma": "tsx scripts/prisma.ts",
     "seed": "tsx prisma/seed.ts"
   },

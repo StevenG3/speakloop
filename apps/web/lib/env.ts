@@ -40,6 +40,7 @@ export function loadEnvFiles(startDir: string): Record<string, string | undefine
   for (let depth = 0; depth < 4; depth += 1) {
     candidates.push(join(current, ".env.example"));
     candidates.push(join(current, ".env"));
+    candidates.push(join(current, ".env.local"));
 
     const next = dirname(current);
     if (next === current) {
